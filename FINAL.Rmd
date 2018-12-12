@@ -136,6 +136,7 @@ The first 6 observations of *train_labels* after setting NaNs to 0
 ```{r echo=TRUE}
 head(train_y)
 ```
+
 The first 6 observations of *test_labels* after setting NaNs to 0
 ```{r echo=TRUE}
 head(test_y)
