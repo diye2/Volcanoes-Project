@@ -313,7 +313,7 @@ acc_loss
 ```
 
 ### Random Forest  
-Random Forest was implemented using the `randomForest` package. Originally, n.tree was set to 200 and all other parameters were set as default. However, due to our large parameter and observation number, this took over than 10 hours to run. As it took too much time, it was terminated before it finished running. The final model used in this project was by setting n.tree to 200, mtry to 80 and nodesize to 70. Variable importance were recorded to compare with variable selection in other methods. Variable importance from random forest are shown in **Figure 12**. The yellow represents the important ones while black means those pixels are less meaningful for our prediction.
+Random Forest was implemented using the `randomForest` package. Originally, n.tree was set to 200 and all other parameters were set as default. However, due to our large parameter and observation number, this took over than 10 hours to run. As it took too much time, it was terminated before it finished running. The final model used in this project was by setting n.tree to 200, mtry to 80 and nodesize to 70. Variable importance were recorded to compare with variable selection in other methods (**Figure 12**). Variable importance from random forest are shown in **Figure 13**. The yellow represents the important ones while black means those pixels are less meaningful for our prediction.
 
 ```{r eval=FALSE, include=TRUE, size='small', tidy=TRUE, tidy.opts=list(width.cutoff=30)}
 #code for random forest
@@ -331,9 +331,14 @@ pal <- colorRampPalette(mycol)(100)
 heatmap(my_matrix,Rowv = NA, Colv = NA,revC = T,col = pal)
 ```
 
+```{r echo=FALSE, out.width="250px", fig.cap="Variable Importance in Random Forest", fig.pos='H'}
+knitr::include_graphics("rfimport.png")
+```
 ```{r echo=FALSE, out.width="250px", fig.cap="The Random Forest variable importance heatmap", fig.pos='H'}
 knitr::include_graphics("rf_heatmap.png")
 ```
+
+
 
 ### Xgboost
 
@@ -363,7 +368,7 @@ Our model prediction results for classfication are summarized in table below.
 
 
 \begin{center}
-Table 1: Test dataset prediction result on whether there is volcanoe or not
+Table 1: Test dataset prediction result on whether there is volcano or not
 \end{center}
 
 \begin{center}
@@ -488,7 +493,7 @@ save(pred_results_number, pred_results_number_class, acc_loss_number, file="neur
 model %>% save_model_hdf5("my_neural_network_model_number.h5")
 ```
 
-**Figure 13** shows the result of the second neural network model which is designed to classify whether an image contains at least one volcano. The model, similar to the first one, used 20% of the training data as validation data. 
+**Figure 14** shows the result of the second neural network model which is designed to classify whether an image contains at least one volcano. The model, similar to the first one, used 20% of the training data as validation data. 
 
 ```{r echo=FALSE, out.width="250px", fig.cap="Neural Network to classify how many volcanoes in each image", fig.pos='H'}
 knitr::include_graphics("neural_network_number.png")
@@ -569,25 +574,23 @@ To apply Marginal Screening, we use for loop to model each pixels with outcome b
 
 We originally only applied Marginal Screening to logistic regression. But after realizing Lasso helped us selected variables as well, we tried both methods on logistic regression.
 
-By looking at the pixels' index, **Figure 14** and **Figure 16**, we found that the pixels selected by Marginal Screening focused between 4000-7000 for classification and between 5200 - 7000 for poisson prediction, which corresponds to the center of pictures; while pixels selected by lasso regression were more spread, as shown in **Figure 15** and **Figure 17**. Comparing these variable selection results to the variable importance in random forest, it is noted that trend of selected variables in Lasso corresponds to the variable importance in random forest.
+By looking at the pixels' index, **figure 15** and **figure 17**, we found that the pixels selected by Marginal Screening focused between 4000-7000 for classification and between 5200 - 7000 for poisson prediction, which corresponds to the center of pictures; while pixels selected by lasso regression were more spread, as shown in **figure 16** and **figure 18**. Comparing these variable selection results to the variable importance in random forest, it is noted that trend of selected variables in Lasso corresponds to the variable importance in random forest.
 
 By applying those two different selection methods, we found the accuracy of Lasso selection is higher for classification; while for Poisson prediction, Marginal Screening selection performs better.
 
-```{r echo= FALSE, out.width="250px", fig.cap="The Marginal Screening index for classification", fig.pos='H'}
+```{r echo= FALSE, out.width="250px", fig.cap="The Marginal Screening index for classification"}
 knitr::include_graphics("M_C.png")
 ```
-```{r echo=FALSE, out.width="250px", fig.cap="The Lasso index for classification", fig.pos='H'}
+```{r echo=FALSE, out.width="250px", fig.cap="The Lasso index for classification"}
 knitr::include_graphics("Lasso_C.png")
 ```
-```{r echo=FALSE, out.width="250px", fig.cap="The Marginal Screening index for Poisson prediction", fig.pos='H'}
+```{r echo=FALSE, out.width="250px", fig.cap="The Marginal Screening index for Poisson prediction"}
 knitr::include_graphics("M_p.png")
 ```
-```{r echo=FALSE, out.width="250px", fig.cap="The Lasso index for Poisson prediction", fig.pos='H'}
+```{r echo=FALSE, out.width="250px", fig.cap="The Lasso index for Poisson prediction"}
 knitr::include_graphics("lasso_P.png")
 ```
-```{r echo=FALSE, out.width="250px", fig.cap="Variable Importance in Random Forest", fig.pos='H'}
-knitr::include_graphics("rfimport.png")
-```
+
 
 Hence, for classification, lasso's variable selection with more spread pixels made more sense because Marginal Screening's centered selection might ignore some important pixels at the edges. For Poisson prediction, we prefer the Marginal Screening since the smaller number of pixels selected by Lasso regression would omit some important information.
 
@@ -595,15 +598,15 @@ Overall, we could conclude the variable selection criteria for this project is h
 
 ## IV. CONCLUSION & DISCUSSION  
 
-Machine learning methods have long been popular in establishing models to faciliate humans in retreiving information from large datasets. One of the discussion topics in the venus image data, obtained through NASA's Magellan spacecraft, is to contruct models in facilitating the identification of whether there are volcanoes or not, how many there are, and the confidence people have in identifying they are volcanoes. For our project, we aim in establishing prediction models in predicting the existance of volcanoe in image data as well as establishing prediction models in predicting how many volcanoes there are. As the daataset is rather unbalanced, with 85% of our image data having no volcanoes, we use the evaluation metric of AUC and F1 score as our prediction metric.
+Machine learning methods have long been popular in establishing models to faciliate humans in retreiving information from large datasets. One of the discussion topics in the venus image data, obtained through NASA's Magellan spacecraft, is to contruct models in facilitating the identification of whether there are volcanoes or not, how many there are, and the confidence people have in identifying they are volcanoes. For our project, we aim in establishing prediction models in predicting the existance of volcano in image data as well as establishing prediction models in predicting how many volcanoes there are. As the daataset is rather unbalanced, with 85% of our image data having no volcanoes, we use the evaluation metric of AUC and F1 score as our prediction metric.
 
-For the prediction of "predicting whether there is volcanoe or not", our models show prediction results using AUC ranged from 0.8429 to 0.9680, using F1 score ranged from 0.9381 to 0.9747. When considering the best model chosen by either AUC or F1 score, it results in different models. For AUC, the best model is xgboost with AUC of 0.9680, whereas for F1 score the best model is neural network with F1 score of 0.9747. When comparing the confusion matrix of these two models, we notice that there are less false positive in xgboost where as there are less false negative in neural network.
+For the prediction of "predicting whether there is volcano or not", our models show prediction results using AUC ranged from 0.8429 to 0.9680, using F1 score ranged from 0.9381 to 0.9747. When considering the best model chosen by either AUC or F1 score, it results in different models. For AUC, the best model is xgboost with AUC of 0.9680, whereas for F1 score the best model is neural network with F1 score of 0.9747. When comparing the confusion matrix of these two models, we notice that there are less false positive in xgboost where as there are less false negative in neural network.
 
 For the prediction of "predicting how many volcanoes there are", our models show prediction results using RMSE ranged from 0.0613 to 0.5073. However the tuning parameterts of these prediction models were directly adopted from the model in the first prediction topic ("predicting whether there is volcano or not"). Lasso and logistic model performed poor results, compared to xgboost. As venus image data are unstructered and have noise, it is possible that prediction results would improve in these two models if dimension reduction techniques were applied. In future improvement, re-tuning these parameters would have improvement in predicting how many volcanoes there are.
 
 Compared to structured data, the images used in this project are unstructured as volcanoes can occur in any pixels, this makes featuring difficult without performing principle component analysis. Models such as lasso, logistic, random forest, require more of predefined features. In this project, convolution neural network fits well in this kind of dataset as it considers local region of the datset.  
 
-It should be noted that, although the prediction result of Lasso regression is not as good as the advanced algorithms, this mode took significantly less running time. If to take into account of running time, Lasso regression is still a good choice. 
+It should be noted that, although the prediction result of Lasso regression is not as good as the advanced algorithms, this model took significantly less running time. If to take into account of running time, Lasso regression is still a good choice. 
 
 The limit of the models in this project is that, due to large parameter and sample size. Tuning advanced models such as random forest, xgboost, and neural network takes a lot of time. The tuning done in this project could be more fined tuned in the future. When predicting the number of volcanoes, parameters in xgboost and neural network were directly used from the previous model, therefore these models could also be further tuned in the future. 
 
